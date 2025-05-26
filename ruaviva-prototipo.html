@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RuaViva - Protótipo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 390px;
+            height: 720px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .screen {
+            display: none;
+            padding: 20px;
+            height: 100%;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: -20px -20px 20px -20px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #546E7A;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .menu-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .menu-item:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+        }
+        
+        .menu-item i {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #2196F3;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .stats-number {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        .stats-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 25px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .alert-info {
+            background: #E3F2FD;
+            color: #0D47A1;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #c3e6cb;
+        }
+        
+        .consent-box {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .map-placeholder {
+            background: #e9ecef;
+            height: 200px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-online {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+        
+        .status-offline {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+        
+        .record-item {
+            background: #f8f9fa;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .record-meta {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .navigation-dots {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+        
+        .dot.active {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Tela 1: Splash/Inicial -->
+        <div class="screen active" id="splash">
+            <div class="header">
+                <div class="logo">RuaViva</div>
+                <div class="subtitle">Apoio Digno e Conectado</div>
+            </div>
+            <div style="flex: 1; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <h2 style="margin-bottom: 20px; color: #333;">Bem-vindo ao RuaViva!</h2>
+                <p style="margin-bottom: 40px; color: #666;">Conectando pessoas em situação de vulnerabilidade com rede de apoio e serviços essenciais</p>
+                <button class="btn" onclick="showScreen('login')">Entrar</button>
+                <button class="btn btn-secondary" onclick="showScreen('cadastro')">Cadastrar-se</button>
+            </div>
+        </div>
+
+        <!-- Tela 2: Login -->
+        <div class="screen" id="login">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('splash')">&larr;</button>
+                <div class="logo">Login</div>
+                <div class="subtitle">Acesse sua conta</div>
+            </div>
+            <div style="flex: 1;">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha:</label>
+                    <input type="password" placeholder="••••••••">
+                </div>
+                <button class="btn" onclick="showScreen('dashboard')">Entrar</button>
+                <p style="text-align: center; margin-top: 20px;">
+                    <a href="#" style="color: #2196F3;">Esqueci minha senha</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Tela 3: Cadastro -->
+        <div class="screen" id="cadastro">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('splash')">&larr;</button>
+                <div class="logo">Cadastro</div>
+                <div class="subtitle">Crie sua conta</div>
+            </div>
+            <div style="flex: 1; overflow-y: auto;">
+                <div class="form-group">
+                    <label>Nome Completo:</label>
+                    <input type="text" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Perfil:</label>
+                    <select>
+                        <option>Selecione...</option>
+                        <option>Profissional de Saúde</option>
+                        <option>Voluntário</option>
+                        <option>Coordenador</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Organização:</label>
+                    <input type="text" placeholder="Nome da organização">
+                </div>
+                <div class="form-group">
+                    <label>Senha:</label>
+                    <input type="password" placeholder="••••••••">
+                </div>
+                <button class="btn" onclick="showScreen('dashboard')">Cadastrar</button>
+            </div>
+        </div>
+
+        <!-- Tela 4: Dashboard -->
+        <div class="screen" id="dashboard">
+            <div class="header">
+                <div class="logo">Dashboard</div>
+                <div class="subtitle">Olá, João Silva!</div>
+                <span class="status-badge status-online">Online</span>
+            </div>
+            <div style="flex: 1;">
+                <div class="stats-card">
+                    <div class="stats-number">47</div>
+                    <div class="stats-label">Registros realizados</div>
+                </div>
+                
+                <div class="menu-grid">
+                    <div class="menu-item" onclick="showScreen('novo-registro')">
+                        <div style="font-size: 32px; margin-bottom: 10px;">👤</div>
+                        <div>Novo Registro</div>
+                    </div>
+                    <div class="menu-item" onclick="showScreen('buscar')">
+                        <div style="font-size: 32px; margin-bottom: 10px;">🔍</div>
+                        <div>Buscar</div>
+                    </div>
+                    <div class="menu-item" onclick="showScreen('meus-registros')">
+                        <div style="font-size: 32px; margin-bottom: 10px;">📋</div>
+                        <div>Meus Registros</div>
+                    </div>
+                    <div class="menu-item" onclick="showScreen('relatorios')">
+                        <div style="font-size: 32px; margin-bottom: 10px;">📊</div>
+                        <div>Relatórios</div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="showScreen('configuracoes')" style="margin-top: 20px;">Configurações</button>
+            </div>
+        </div>
+
+        <!-- Tela 5: Novo Registro - Consentimento -->
+        <div class="screen" id="novo-registro">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('dashboard')">&larr;</button>
+                <div class="logo">Novo Registro</div>
+                <div class="subtitle">Passo 1 de 4</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 25%;"></div>
+            </div>
+            <div style="flex: 1;">
+                <div class="alert alert-info">
+                    <strong>Importante:</strong> Sempre explique o propósito do registro e garanta o consentimento da pessoa.
+                </div>
+                
+                <div class="consent-box">
+                    <h3 style="margin-bottom: 15px;">Checklist de Abordagem:</h3>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="apresentacao">
+                        <label for="apresentacao">Me apresentei e expliquei meu papel</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="proposito">
+                        <label for="proposito">Expliquei o propósito do registro</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="anonimato">
+                        <label for="anonimato">Garantii o anonimato dos dados</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="consentimento">
+                        <label for="consentimento">A pessoa consentiu em participar</label>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="showScreen('registro-dados')">Continuar</button>
+                <button class="btn btn-secondary" onclick="showScreen('recusa')">Pessoa Recusou</button>
+            </div>
+        </div>
+
+        <!-- Tela 6: Registro de Dados Básicos -->
+        <div class="screen" id="registro-dados">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('novo-registro')">&larr;</button>
+                <div class="logo">Dados Básicos</div>
+                <div class="subtitle">Passo 2 de 4</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%;"></div>
+            </div>
+            <div style="flex: 1; overflow-y: auto;">
+                <div class="form-group">
+                    <label>Idade Aproximada:</label>
+                    <select>
+                        <option>Selecione...</option>
+                        <option>Criança (0-12)</option>
+                        <option>Adolescente (13-17)</option>
+                        <option>Jovem (18-29)</option>
+                        <option>Adulto (30-59)</option>
+                        <option>Idoso (60+)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Gênero (autodeclarado):</label>
+                    <select>
+                        <option>Não informado</option>
+                        <option>Masculino</option>
+                        <option>Feminino</option>
+                        <option>Não-binário</option>
+                        <option>Prefiro não dizer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Localização Atual:</label>
+                    <div class="map-placeholder">
+                        📍 Localização capturada automaticamente
+                    </div>
+                </div>
+                <button class="btn" onclick="showScreen('registro-saude')">Próximo</button>
+            </div>
+        </div>
+
+        <!-- Tela 7: Dados de Saúde -->
+        <div class="screen" id="registro-saude">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('registro-dados')">&larr;</button>
+                <div class="logo">Dados de Saúde</div>
+                <div class="subtitle">Passo 3 de 4</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%;"></div>
+            </div>
+            <div style="flex: 1; overflow-y: auto;">
+                <div class="alert alert-info">
+                    <strong>Emergência médica?</strong> 
+                    <button class="btn btn-danger" onclick="showScreen('emergencia')" style="width: auto; margin: 5px 0 0 0; padding: 8px 16px;">Acionar SAMU</button>
+                </div>
+                
+                <div class="form-group">
+                    <label>Condições de saúde aparentes:</label>
+                    <textarea rows="3" placeholder="Descreva condições visíveis ou relatadas pela pessoa..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Necessidades médicas urgentes:</label>
+                    <select>
+                        <option>Nenhuma identificada</option>
+                        <option>Ferimentos</option>
+                        <option>Sinais de doença</option>
+                        <option>Necessidade de medicamentos</option>
+                        <option>Problemas mentais aparentes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Uso de medicamentos:</label>
+                    <textarea rows="2" placeholder="Medicamentos mencionados pela pessoa..."></textarea>
+                </div>
+                <button class="btn" onclick="showScreen('registro-social')">Próximo</button>
+            </div>
+        </div>
+
+        <!-- Tela 8: Situação Social -->
+        <div class="screen" id="registro-social">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('registro-saude')">&larr;</button>
+                <div class="logo">Situação Social</div>
+                <div class="subtitle">Passo 4 de 4</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%;"></div>
+            </div>
+            <div style="flex: 1; overflow-y: auto;">
+                <div class="form-group">
+                    <label>Tempo aproximado em situação de rua:</label>
+                    <select>
+                        <option>Menos de 1 mês</option>
+                        <option>1-6 meses</option>
+                        <option>6 meses - 1 ano</option>
+                        <option>1-5 anos</option>
+                        <option>Mais de 5 anos</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Composição familiar:</label>
+                    <select>
+                        <option>Sozinho</option>
+                        <option>Com parceiro/cônjuge</option>
+                        <option>Com filhos</option>
+                        <option>Grupo familiar</option>
+                        <option>Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fonte de renda:</label>
+                    <select>
+                        <option>Nenhuma</option>
+                        <option>Catação de recicláveis</option>
+                        <option>Trabalhos eventuais</option>
+                        <option>Auxílio governamental</option>
+                        <option>Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Observações adicionais:</label>
+                    <textarea rows="3" placeholder="Informações relevantes adicionais..."></textarea>
+                </div>
+                <button class="btn" onclick="showScreen('registro-sucesso')">Finalizar Registro</button>
+            </div>
+        </div>
+
+        <!-- Tela 9: Sucesso do Registro -->
+        <div class="screen" id="registro-sucesso">
+            <div class="header">
+                <div class="logo">Registro Concluído</div>
+                <div class="subtitle">✅ Sucesso!</div>
+            </div>
+            <div style="flex: 1; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <div class="alert alert-success">
+                    <strong>Registro realizado com sucesso!</strong><br>
+                    ID: #PSR-2024-001234<br>
+                    Dados enviados e anonimizados.
+                </div>
+                
+                <div style="font-size: 64px; margin: 20px 0;">✅</div>
+                
+                <p style="margin-bottom: 30px; color: #666;">
+                    Os serviços sociais e de saúde serão notificados automaticamente.
+                </p>
+                
+                <button class="btn" onclick="showScreen('novo-registro')">Novo Registro</button>
+                <button class="btn btn-secondary" onclick="showScreen('dashboard')">Voltar ao Menu</button>
+            </div>
+        </div>
+
+        <!-- Tela 10: Meus Registros -->
+        <div class="screen" id="meus-registros">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('dashboard')">&larr;</button>
+                <div class="logo">Meus Registros</div>
+                <div class="subtitle">Histórico pessoal</div>
+            </div>
+            <div style="flex: 1;">
+                <div class="stats-card">
+                    <div class="stats-number">47</div>
+                    <div class="stats-label">Registros realizados por você</div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                    <div class="stats-card" style="font-size: 14px;">
+                        <div class="stats-number" style="font-size: 24px;">12</div>
+                        <div class="stats-label">Esta semana</div>
+                    </div>
+                    <div class="stats-card" style="font-size: 14px;">
+                        <div class="stats-number" style="font-size: 24px;">89%</div>
+                        <div class="stats-label">Taxa de follow-up</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 15px;">Registros Recentes:</h3>
+                
+                <div class="record-item">
+                    <div class="record-meta">ID: #PSR-001247 • Hoje, 14:30</div>
+                    <div><strong>Homem, 35-40 anos</strong></div>
+                    <div>📍 Centro • Status: Atendido</div>
+                    <div style="margin-top: 5px;">
+                        <span class="status-badge status-online">Follow-up realizado</span>
+                    </div>
+                </div>
+                
+                <div class="record-item">
+                    <div class="record-meta">ID: #PSR-001246 • Ontem, 16:45</div>
+                    <div><strong>Mulher, 25-30 anos</strong></div>
+                    <div>📍 Zona Norte • Status: Encaminhada</div>
+                    <div style="margin-top: 5px;">
+                        <span class="status-badge status-online">CRAS contatado</span>
+                    </div>
+                </div>
+                
+                <div class="record-item">
+                    <div class="record-meta">ID: #PSR-001245 • 2 dias atrás</div>
+                    <div><strong>Homem, 50+ anos</strong></div>
+                    <div>📍 Zona Sul • Status: Em acompanhamento</div>
+                    <div style="margin-top: 5px;">
+                        <span class="status-badge" style="background: #FFF3CD; color: #856404;">Aguardando visita</span>
+                    </div>
+                </div>
+                
+                <div class="record-item">
+                    <div class="record-meta">ID: #PSR-001244 • 3 dias atrás</div>
+                    <div><strong>Família com 2 crianças</strong></div>
+                    <div>📍 Centro • Status: Prioridade</div>
+                    <div style="margin-top: 5px;">
+                        <span class="status-badge status-online">Casa de acolhimento</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-secondary" style="margin-top: 20px;">Ver Todos os Registros</button>
+            </div>
+        </div>
+
+        <!-- Tela 11: Buscar Registros -->
+        <div class="screen" id="buscar">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('dashboard')">&larr;</button>
+                <div class="logo">Buscar</div>
+                <div class="subtitle">Encontrar registros</div>
+            </div>
+            <div style="flex: 1;">
+                <div class="form-group">
+                    <label>Filtrar por região:</label>
+                    <select>
+                        <option>Todas as regiões</option>
+                        <option>Centro</option>
+                        <option>Zona Norte</option>
+                        <option>Zona Sul</option>
+                        <option>Zona Leste</option>
+                        <option>Zona Oeste</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Período:</label>
+                    <select>
+                        <option>Último mês</option>
+                        <option>Últimos 3 meses</option>
+                        <option>Último ano</option>
+                        <option>Personalizado</option>
+                    </select>
+                </div>
+                <button class="btn">Buscar</button>
+                
+                <div style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 15px;">Resultados (3 encontrados):</h3>
+                    <div class="record-item">
+                        <div class="record-meta">ID: #PSR-001234 • 2 dias atrás</div>
+                        <div><strong>Homem, 35-40 anos</strong></div>
+                        <div>Centro • Necessita atendimento médico</div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-meta">ID: #PSR-001235 • 1 semana atrás</div>
+                        <div><strong>Mulher, 25-30 anos</strong></div>
+                        <div>Zona Norte • Com criança</div>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-meta">ID: #PSR-001236 • 2 semanas atrás</div>
+                        <div><strong>Idoso, 60+ anos</strong></div>
+                        <div>Zona Sul • Catador de recicláveis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela 12: Relatórios -->
+        <div class="screen" id="relatorios">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('dashboard')">&larr;</button>
+                <div class="logo">Relatórios</div>
+                <div class="subtitle">Estatísticas e dados</div>
+            </div>
+            <div style="flex: 1; overflow-y: auto;">
+                <div class="stats-card">
+                    <div class="stats-number">1,247</div>
+                    <div class="stats-label">Total de registros</div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                    <div class="stats-card" style="font-size: 14px;">
+                        <div class="stats-number" style="font-size: 24px;">68%</div>
+                        <div class="stats-label">Homens</div>
+                    </div>
+                    <div class="stats-card" style="font-size: 14px;">
+                        <div class="stats-number" style="font-size: 24px;">32%</div>
+                        <div class="stats-label">Mulheres</div>
+                    </div>
+                </div>
+                
+                <div class="map-placeholder">
+                    📊 Gráfico de distribuição por região
+                </div>
+                
+                <button class="btn">Exportar Relatório PDF</button>
+                <button class="btn btn-secondary">Exportar CSV</button>
+                
+                <h3 style="margin: 20px 0 10px;">Indicadores de Impacto:</h3>
+                <div class="record-item">
+                    <div><strong>47 pessoas</strong> receberam atendimento médico</div>
+                </div>
+                <div class="record-item">
+                    <div><strong>23 famílias</strong> foram encaminhadas para CRAS</div>
+                </div>
+                <div class="record-item">
+                    <div><strong>8 crianças</strong> foram identificadas e protegidas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela 13: Configurações -->
+        <div class="screen" id="configuracoes">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('dashboard')">&larr;</button>
+                <div class="logo">Configurações</div>
+                <div class="subtitle">Preferências do usuário</div>
+            </div>
+            <div style="flex: 1;">
+                <div class="menu-item" style="margin-bottom: 10px;">
+                    <div>👤 Meu Perfil</div>
+                </div>
+                <div class="menu-item" style="margin-bottom: 10px;">
+                    <div>🔔 Notificações</div>
+                </div>
+                <div class="menu-item" style="margin-bottom: 10px;">
+                    <div>📱 Modo Offline</div>
+                </div>
+                <div class="menu-item" style="margin-bottom: 10px;">
+                    <div>🔒 Privacidade</div>
+                </div>
+                <div class="menu-item" style="margin-bottom: 10px;">
+                    <div>❓ Ajuda e Suporte</div>
+                </div>
+                <div class="menu-item" style="margin-bottom: 20px;">
+                    <div>📖 Tutorial</div>
+                </div>
+                
+                <button class="btn btn-secondary" onclick="showScreen('splash')">Sair da Conta</button>
+            </div>
+        </div>
+
+        <!-- Tela de Recusa -->
+        <div class="screen" id="recusa">
+            <div class="header">
+                <button class="back-btn" onclick="showScreen('novo-registro')">&larr;</button>
+                <div class="logo">Recusa Registrada</div>
+                <div class="subtitle">Respeitando a decisão</div>
+            </div>
+            <div style="flex: 1; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <div style="font-size: 64px; margin: 20px 0;">🤝</div>
+                
+                <div class="alert alert-info">
+                    A pessoa optou por não participar do registro. Sua decisão foi respeitada e nenhum dado foi coletado.
+                </div>
+                
+                <p style="margin: 20px 0; color: #666;">
+                    Continue oferecendo apoio e informações sobre serviços disponíveis, mesmo sem o registro formal.
+                </p>
+                
+                <button class="btn" onclick="showScreen('novo-registro')">Nova Abordagem</button>
+                <button class="btn btn-secondary" onclick="showScreen('dashboard')">Voltar ao Menu</button>
+            </div>
+        </div>
+
+        <!-- Tela de Emergência -->
+        <div class="screen" id="emergencia">
+            <div class="header" style="background: #dc3545;">
+                <button class="back-btn" onclick="showScreen('registro-saude')">&larr;</button>
+                <div class="logo">🚨 EMERGÊNCIA</div>
+                <div class="subtitle">Protocolo de urgência ativado</div>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <div style="font-size: 64px; margin: 20px 0; color: #dc3545;">🚨</div>
+                
+                <div class="alert" style="background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545;">
+                    <strong>Contatos de emergência acionados automaticamente:</strong><br><br>
+                    📞 SAMU: 192<br>
+                    🏥 UPA mais próxima notificada<br>
+                    📍 Localização compartilhada
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <h3>Enquanto aguarda o atendimento:</h3>
+                    <ul style="text-align: left; margin: 15px 0;">
+                        <li>Mantenha a pessoa calma</li>
+                        <li>Não mova se houver suspeita de lesão</li>
+                        <li>Monitore sinais vitais se possível</li>
+                        <li>Aguarde no local</li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-success" onclick="showScreen('registro-social')">Emergência Resolvida</button>
+                <button class="btn btn-secondary" onclick="showScreen('dashboard')">Cancelar Registro</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            // Esconder todas as telas
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Verificar se a tela existe antes de mostrar
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            } else {
+                console.error(`Tela '${screenId}' não encontrada!`);
+                // Voltar para o dashboard como fallback
+                const dashboard = document.getElementById('dashboard');
+                if (dashboard) {
+                    dashboard.classList.add('active');
+                }
+            }
+        }
+        
+        // Adicionar eventos de teclado para navegação rápida
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                showScreen('dashboard');
+            }
+        });
+        
+        // Simular dados dinâmicos
+        setInterval(() => {
+            const statusBadge = document.querySelector('.status-badge');
+            if (statusBadge) {
+                const isOnline = Math.random() > 0.1; // 90% chance de estar online
+                statusBadge.textContent = isOnline ? 'Online' : 'Offline';
+                statusBadge.className = isOnline ? 'status-badge status-online' : 'status-badge status-offline';
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
